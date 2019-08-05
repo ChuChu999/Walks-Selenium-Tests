@@ -15,8 +15,8 @@ import time
 
 
 class Environment(Enum):
-    STAGING = "staging"
-    PRODUCTION = "production"
+    STAGING = "tw_staging"
+    PRODUCTION = "tw_production"
 
 
 class General:
@@ -246,6 +246,5 @@ class PromoCode:
         self.save_screenshot("Post-PromoCode.png")
 
         apply_promo = self.browser.find_element_by_class_name("promo-btn")
-        # self.save_screenshot("Post-ApplyPromo.png")
-
+        
         apply_promo.send_keys(Keys.ENTER)
