@@ -7,7 +7,7 @@ class TWTests(unittest.TestCase):
 
     def setUp(self):
         self.general = tw_actions.General()
-        self.site = tw_actions.Site
+        self.env = tw_actions.Environment
 
         self.general.set_up_selenium()
 
@@ -15,7 +15,7 @@ class TWTests(unittest.TestCase):
         self.general.tear_down_selenium()
 
     def test_booking(self):
-        self.general.initialize_test("TestBooking", self.site.STAGING.value)
+        self.general.initialize_test("TestBooking", self.env.PRODUCTION.value)
         self.general.load_site()
         self.general.select_market()
         self.general.select_tour()
@@ -44,7 +44,7 @@ class TWTests(unittest.TestCase):
     def test_promo_code(self):
         self.promo = tw_actions.PromoCode(self.general)
 
-        self.general.initialize_test("TestPromoCode", self.site.STAGING.value)
+        self.general.initialize_test("TestPromoCode", self.env.STAGING.value)
         self.general.load_site()
         self.general.select_market()
         self.general.select_tour()
@@ -85,5 +85,5 @@ def run_tests():
 
 
 if __name__ == "__main__":
-    # run_test("test_promo_code")
+    # run_test("test_booking")
     run_tests()

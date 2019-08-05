@@ -1,3 +1,4 @@
+import configparser
 from datetime import datetime
 from enum import Enum
 import os
@@ -13,9 +14,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 import time
 
 
-class Site(Enum):
-    STAGING = "https://cf-staging.takewalks.com"
-    PRODUCTION = "https://www.takewalks.com"
+class Environment(Enum):
+    STAGING = "staging"
+    PRODUCTION = "production"
 
 
 class General:
@@ -27,9 +28,26 @@ class General:
     def tear_down_selenium(self):
         self.browser.quit()
 
-    def initialize_test(self, test_name: str, url: str):
+    def initialize_test(self, test_name: str, env: Environment):
         self.test_name = test_name
-        self.url = url
+        self.parser = configparser.ConfigParser()
+
+        self.parser.read("config.ini")
+
+        self.url = self.parser.get(env, "url")
+        self.first_name = self.parser.get(env, "first_name")
+        self.last_name = self.parser.get(env, "last_name")
+        self.email = self.parser.get(env, "email")
+        self.phone = self.parser.get(env, "phone")
+        self.card_number = self.parser.get(env, "card_number")
+        self.expiry_month = self.parser.get(env, "expiry_month")
+        self.expiry_year = self.parser.get(env, "expiry_year")
+        self.cvv = self.parser.get(env, "cvv")
+        self.address = self.parser.get(env, "address")
+        self.country = self.parser.get(env, "country")
+        self.zip = self.parser.get(env, "zip")
+        self.state = self.parser.get(env, "state")
+        self.city = self.parser.get(env, "city")
         self.screenshot_dir = "Screenshots/" + self.test_name
 
         os.makedirs(self.screenshot_dir, exist_ok=True)
@@ -122,69 +140,69 @@ class General:
         first_name = self.wait.until(
             EC.visibility_of_element_located((By.ID, "theFirstname")))
 
-        first_name.send_keys("Test")
+        first_name.send_keys(self.first_name)
 
     def fill_last_name(self):
         last_name = self.browser.find_element_by_id("theLastname")
 
-        last_name.send_keys("Booking")
+        last_name.send_keys(self.last_name)
 
     def fill_email(self):
         email = self.browser.find_element_by_id("theEmail")
 
-        email.send_keys("nicholas+staging@takewalks.com")
+        email.send_keys(self.email)
 
     def fill_phone(self):
         phone = self.browser.find_element_by_id("thePhone")
 
-        phone.send_keys("1234567")
+        phone.send_keys(self.phone)
         self.save_screenshot("Post-Phone.png")
 
     def fill_credit_card(self):
         cc = self.browser.find_element_by_id("ccno")
 
-        cc.send_keys("5555555555554444")
+        cc.send_keys(self.card_number)
 
     def select_expiry_month(self):
         cc_month = Select(self.browser.find_element_by_name("ccMonth"))
 
-        cc_month.select_by_value("12")
+        cc_month.select_by_value(self.expiry_month)
 
     def select_expiry_year(self):
         cc_year = Select(self.browser.find_element_by_name("ccYear"))
 
-        cc_year.select_by_value("2022")
+        cc_year.select_by_value(self.expiry_year)
 
     def fill_cvv(self):
         cvv = self.browser.find_element_by_id("theCcv")
 
-        cvv.send_keys("123")
+        cvv.send_keys(self.cvv)
         self.save_screenshot("Post-CVV.png")
 
     def fill_address(self):
         address = self.browser.find_element_by_name("street_address")
 
-        address.send_keys("5323 Levander Loop")
+        address.send_keys(self.address)
 
     def select_country(self):
         country = Select(self.browser.find_element_by_name("country"))
 
-        country.select_by_value("United States of America")
+        country.select_by_value(self.country)
 
     def fill_zip_code(self):
         zip = self.browser.find_element_by_name("zip")
 
-        zip.send_keys("78702")
+        zip.send_keys(self.zip)
 
     def select_state(self):
         state = Select(self.browser.find_element_by_id("state_select"))
 
-        state.select_by_value("TX")
+        state.select_by_value(self.state)
 
     def fill_city(self):
         city = self.browser.find_element_by_name("city")
 
-        city.send_keys("Austin")
+        city.send_keys(self.city)
 
     def tick_terms_and_conditions(self):
         terms = self.browser.find_element_by_css_selector(
