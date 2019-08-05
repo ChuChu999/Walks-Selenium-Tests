@@ -1,6 +1,12 @@
+from enum import Enum
 import woi_actions
 import time
 import unittest
+
+
+class TestName(Enum):
+    BOOKING = "test_booking"
+    PROMO_CODE = "test_promo_code"
 
 
 class WOITests(unittest.TestCase):
@@ -85,5 +91,5 @@ def run_tests():
 
 
 if __name__ == "__main__":
-    # run_test("test_promo_code")
-    run_tests()
+    run_test(TestName.BOOKING.value)
+    # run_tests()

@@ -1,6 +1,12 @@
+from enum import Enum
 import tw_actions
 import time
 import unittest
+
+
+class TestName(Enum):
+    BOOKING = "test_booking"
+    PROMO_CODE = "test_promo_code"
 
 
 class TWTests(unittest.TestCase):
@@ -72,7 +78,7 @@ class TWTests(unittest.TestCase):
         time.sleep(3)
 
 
-def run_test(test_name: str):
+def run_test(test_name: TestName):
     suite = unittest.TestSuite()
     runner = unittest.TextTestRunner()
 
@@ -85,5 +91,5 @@ def run_tests():
 
 
 if __name__ == "__main__":
-    # run_test("test_booking")
-    run_tests()
+    run_test(TestName.BOOKING.value)
+    # run_tests()
