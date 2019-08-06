@@ -7,13 +7,15 @@ import unittest
 class TestName(Enum):
     BOOKING = "test_booking"
     PROMO_CODE = "test_promo_code"
+    LOAD_ALL_TOURS = "test_Load_all_tours"
 
 
 class TWTests(unittest.TestCase):
 
     def setUp(self):
         self.general = tw_actions.General()
-        self.env = tw_actions.Environment
+        # change to set environment
+        self.env = tw_actions.Environment.STAGING.value
 
         self.general.set_up_selenium()
 
@@ -21,7 +23,7 @@ class TWTests(unittest.TestCase):
         self.general.tear_down_selenium()
 
     def test_booking(self):
-        self.general.initialize_test("TestBooking", self.env.PRODUCTION.value)
+        self.general.initialize_test("TestBooking", self.env)
         self.general.load_site()
         self.general.select_market()
         self.general.select_tour()
@@ -48,9 +50,9 @@ class TWTests(unittest.TestCase):
         time.sleep(3)
 
     def test_promo_code(self):
-        self.promo = tw_actions.PromoCode(self.general)
+        promo = tw_actions.PromoCode(self.general)
 
-        self.general.initialize_test("TestPromoCode", self.env.STAGING.value)
+        self.general.initialize_test("TestPromoCode", self.env)
         self.general.load_site()
         self.general.select_market()
         self.general.select_tour()
@@ -59,7 +61,7 @@ class TWTests(unittest.TestCase):
         self.general.select_time()
         self.general.select_adults()
         self.general.book_tour()
-        self.promo.fill_promo_code()  # fill promo code
+        promo.fill_promo_code()  # fill promo code
         self.general.fill_first_name()
         self.general.fill_last_name()
         self.general.fill_email()
@@ -77,6 +79,14 @@ class TWTests(unittest.TestCase):
         self.general.submit_payment_form()
         time.sleep(3)
 
+    def test_Load_all_tours(self):
+        cache = tw_actions.Cache()
+
+        self.general.initialize_test("TestLoadAllTours", self.env)
+        self.general.load_site()
+        cache.load_all_tours(self.general)
+        time.sleep(3)
+
 
 def run_test(test_name: TestName):
     suite = unittest.TestSuite()
@@ -91,5 +101,6 @@ def run_tests():
 
 
 if __name__ == "__main__":
-    run_test(TestName.BOOKING.value)
+    # change self.env in setUp() to select environment
+    run_test(TestName.LOAD_ALL_TOURS.value)
     # run_tests()

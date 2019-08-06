@@ -13,7 +13,8 @@ class WOITests(unittest.TestCase):
 
     def setUp(self):
         self.general = woi_actions.General()
-        self.env = woi_actions.Environment
+        # change to set environment
+        self.env = woi_actions.Environment.STAGING.value
 
         self.general.set_up_selenium()
 
@@ -21,7 +22,7 @@ class WOITests(unittest.TestCase):
         self.general.tear_down_selenium()
 
     def test_booking(self):
-        self.general.initialize_test("TestBooking", self.env.STAGING.value)
+        self.general.initialize_test("TestBooking", self.env)
         self.general.load_site()
         self.general.select_market()
         self.general.select_tour()
@@ -50,7 +51,7 @@ class WOITests(unittest.TestCase):
     def test_promo_code(self):
         self.promo = woi_actions.PromoCode(self.general)
 
-        self.general.initialize_test("TestPromoCode", self.env.STAGING.value)
+        self.general.initialize_test("TestPromoCode", self.env)
         self.general.load_site()
         self.general.select_market()
         self.general.select_tour()
@@ -91,5 +92,6 @@ def run_tests():
 
 
 if __name__ == "__main__":
+    # change self.env in setUp() to select environment
     run_test(TestName.BOOKING.value)
     # run_tests()

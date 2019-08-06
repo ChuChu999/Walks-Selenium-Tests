@@ -113,6 +113,7 @@ class General:
             raise Exception("no available days two months in advance")
 
         self.wait.until(EC.visibility_of(availableDays[0]))
+        time.sleep(0.1)
         self.save_screenshot("Pre-Date.png")
         availableDays[0].send_keys(Keys.ENTER)
 
@@ -246,5 +247,48 @@ class PromoCode:
         self.save_screenshot("Post-PromoCode.png")
 
         apply_promo = self.browser.find_element_by_class_name("promo-btn")
-        
+
         apply_promo.send_keys(Keys.ENTER)
+
+
+class Cache:
+
+    def load_all_tours(self, general: General):
+        nav_bar = general.wait.until(EC.visibility_of_element_located(
+            (By.CSS_SELECTOR, "div.topnav-nav")))
+        regions = nav_bar.find_elements_by_css_selector(
+            "div[data-country-toggler]")
+        all_market_links = []
+
+        for region in regions:
+            markets = region.find_elements_by_css_selector("div.inner-list a")
+            market_links = [market.get_attribute("href") for market in markets]
+
+            print(str(len(markets)) + " total markets in " +
+                  region.get_attribute("data-country-toggler"))
+            print(market_links)
+            all_market_links.extend(market_links)
+
+        print(str(len(all_market_links)) + " total markets in all regions")
+        print(all_market_links)
+
+        for market_link in all_market_links:
+            general.browser.get(market_link)
+
+            tour_overview = general.wait.until(EC.visibility_of_element_located(
+                (By.CSS_SELECTOR, "div.tour-list-wrap ")))
+            tours = tour_overview.find_elements_by_css_selector(
+                "div.tour-list-items a")
+            tour_links = [tour.get_attribute("href") for tour in tours]
+
+            print(str(len(tours)) + " total tours in " + market_link)
+            print(tour_links)
+
+            for tour in tour_links:
+                print("loading " + tour)
+                general.browser.get(tour)
+                general.wait.until(EC.visibility_of_element_located(
+                    (By.CSS_SELECTOR, "div.right-book-desktop")))
+                time.sleep(1)
+
+            time.sleep(3)
