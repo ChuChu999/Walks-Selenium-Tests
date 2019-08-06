@@ -7,16 +7,19 @@ import unittest
 class TestName(Enum):
     BOOKING = "test_booking"
     PROMO_CODE = "test_promo_code"
+    LOAD_ALL_TOURS = "test_Load_all_tours"
 
 
 class WOITests(unittest.TestCase):
 
     def setUp(self):
         self.general = woi_actions.General()
-        # change to set environment
-        self.env = woi_actions.Environment.STAGING.value
 
         self.general.set_up_selenium()
+
+        self.env = woi_actions.Environment.STAGING.value  # change to set environment
+        self.promo_code = woi_actions.PromoCode(self.general)
+        self.cache = woi_actions.Cache(self.general)
 
     def tearDown(self):
         self.general.tear_down_selenium()
@@ -49,8 +52,6 @@ class WOITests(unittest.TestCase):
         time.sleep(3)
 
     def test_promo_code(self):
-        self.promo = woi_actions.PromoCode(self.general)
-
         self.general.initialize_test("TestPromoCode", self.env)
         self.general.load_site()
         self.general.select_market()
@@ -60,7 +61,7 @@ class WOITests(unittest.TestCase):
         self.general.select_time()
         self.general.select_adults()
         self.general.book_tour()
-        self.promo.fill_promo_code()  # fill promo code
+        self.promo_code.fill_promo_code()  # fill promo code
         self.general.fill_first_name()
         self.general.fill_last_name()
         self.general.fill_email()
@@ -78,6 +79,12 @@ class WOITests(unittest.TestCase):
         self.general.submit_payment_form()
         time.sleep(3)
 
+    def test_Load_all_tours(self):
+        self.general.initialize_test("TestLoadAllTours", self.env)
+        self.general.load_site()
+        self.cache.load_all_tours()
+        time.sleep(3)
+
 
 def run_test(test_name: str):
     suite = unittest.TestSuite()
@@ -93,5 +100,5 @@ def run_tests():
 
 if __name__ == "__main__":
     # change self.env in setUp() to select environment
-    run_test(TestName.BOOKING.value)
+    run_test(TestName.LOAD_ALL_TOURS.value)
     # run_tests()

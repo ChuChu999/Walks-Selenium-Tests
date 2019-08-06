@@ -256,3 +256,42 @@ class PromoCode:
             "div.promo-code-field button")
 
         apply_promo.send_keys(Keys.ENTER)
+
+
+class Cache:
+
+    def __init__(self, general: General):
+        self.browser = general.browser
+        self.wait = general.wait
+        self.save_screenshot = general.save_screenshot
+
+    def load_all_tours(self):
+        nav_bar = self.wait.until(EC.visibility_of_element_located(
+            (By.CSS_SELECTOR, "div.topnav-nav")))
+        markets = nav_bar.find_elements_by_css_selector(
+            'div[class="bordered"] a')
+        market_links = [market.get_attribute("href") for market in markets]
+
+        print(str(len(market_links)) + " total markets")
+        print(market_links)
+
+        for market_link in market_links:
+            self.browser.get(market_link)
+
+            tour_overview = self.wait.until(EC.visibility_of_element_located(
+                (By.CSS_SELECTOR, "div.tour-list-container")))
+            tours = tour_overview.find_elements_by_css_selector(
+                "div.large a.image-link")
+            tour_links = [tour.get_attribute("href") for tour in tours]
+
+            print(str(len(tours)) + " total tours in " + market_link)
+            print(tour_links)
+
+            for tour in tour_links:
+                print("loading " + tour)
+                self.browser.get(tour)
+                self.wait.until(EC.visibility_of_element_located(
+                    (By.CSS_SELECTOR, "div.right-book-desktop")))
+                time.sleep(1)
+
+            time.sleep(3)

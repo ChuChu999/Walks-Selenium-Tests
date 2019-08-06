@@ -14,10 +14,12 @@ class TWTests(unittest.TestCase):
 
     def setUp(self):
         self.general = tw_actions.General()
-        # change to set environment
-        self.env = tw_actions.Environment.STAGING.value
 
         self.general.set_up_selenium()
+
+        self.env = tw_actions.Environment.STAGING.value  # change to set environment
+        self.promo_code = tw_actions.PromoCode(self.general)
+        self.cache = tw_actions.Cache(self.general)
 
     def tearDown(self):
         self.general.tear_down_selenium()
@@ -50,8 +52,6 @@ class TWTests(unittest.TestCase):
         time.sleep(3)
 
     def test_promo_code(self):
-        promo = tw_actions.PromoCode(self.general)
-
         self.general.initialize_test("TestPromoCode", self.env)
         self.general.load_site()
         self.general.select_market()
@@ -61,7 +61,7 @@ class TWTests(unittest.TestCase):
         self.general.select_time()
         self.general.select_adults()
         self.general.book_tour()
-        promo.fill_promo_code()  # fill promo code
+        self.promo_code.fill_promo_code()  # fill promo code
         self.general.fill_first_name()
         self.general.fill_last_name()
         self.general.fill_email()
@@ -80,11 +80,9 @@ class TWTests(unittest.TestCase):
         time.sleep(3)
 
     def test_Load_all_tours(self):
-        cache = tw_actions.Cache()
-
         self.general.initialize_test("TestLoadAllTours", self.env)
         self.general.load_site()
-        cache.load_all_tours(self.general)
+        self.cache.load_all_tours()
         time.sleep(3)
 
 

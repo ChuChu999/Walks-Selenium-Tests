@@ -253,8 +253,13 @@ class PromoCode:
 
 class Cache:
 
-    def load_all_tours(self, general: General):
-        nav_bar = general.wait.until(EC.visibility_of_element_located(
+    def __init__(self, general: General):
+        self.browser = general.browser
+        self.wait = general.wait
+        self.save_screenshot = general.save_screenshot
+
+    def load_all_tours(self):
+        nav_bar = self.wait.until(EC.visibility_of_element_located(
             (By.CSS_SELECTOR, "div.topnav-nav")))
         regions = nav_bar.find_elements_by_css_selector(
             "div[data-country-toggler]")
@@ -273,10 +278,10 @@ class Cache:
         print(all_market_links)
 
         for market_link in all_market_links:
-            general.browser.get(market_link)
+            self.browser.get(market_link)
 
-            tour_overview = general.wait.until(EC.visibility_of_element_located(
-                (By.CSS_SELECTOR, "div.tour-list-wrap ")))
+            tour_overview = self.wait.until(EC.visibility_of_element_located(
+                (By.CSS_SELECTOR, "div.tour-list-wrap")))
             tours = tour_overview.find_elements_by_css_selector(
                 "div.tour-list-items a")
             tour_links = [tour.get_attribute("href") for tour in tours]
@@ -286,8 +291,8 @@ class Cache:
 
             for tour in tour_links:
                 print("loading " + tour)
-                general.browser.get(tour)
-                general.wait.until(EC.visibility_of_element_located(
+                self.browser.get(tour)
+                self.wait.until(EC.visibility_of_element_located(
                     (By.CSS_SELECTOR, "div.right-book-desktop")))
                 time.sleep(1)
 
