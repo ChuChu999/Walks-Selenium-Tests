@@ -7,7 +7,7 @@ import unittest
 class TestName(Enum):
     REGULAR_BOOKING = "test_regular_booking"
     PROMO_CODE = "test_promo_code"
-    LOAD_ALL_TOURS = "test_Load_all_tours"
+    LOAD_ALL_TOURS = "test_load_all_tours"
 
 
 class WOITests(unittest.TestCase):
@@ -79,7 +79,7 @@ class WOITests(unittest.TestCase):
         self.general.submit_payment_form()
         time.sleep(3)
 
-    def test_Load_all_tours(self):
+    def test_load_all_tours(self):
         self.general.initialize_test("TestLoadAllTours", self.env)
         self.general.load_site()
         self.cache.load_all_tours()
@@ -100,5 +100,5 @@ def run_tests():
 
 if __name__ == "__main__":
     ## change self.env in setUp() to select environment
-    run_test(TestName.REGULAR_BOOKING)
+    run_test(TestName.LOAD_ALL_TOURS)
     # run_tests()

@@ -260,7 +260,7 @@ class Cache:
         self.wait = general.wait
         self.save_screenshot = general.save_screenshot
 
-    def load_all_tours(self):
+    def get_all_market_links(self) -> list:
         nav_bar = self.wait.until(EC.visibility_of_element_located(
             (By.CSS_SELECTOR, "div.topnav-nav")))
         regions = nav_bar.find_elements_by_css_selector(
@@ -279,21 +279,31 @@ class Cache:
         print(str(len(all_market_links)) + " total markets in all regions")
         print(all_market_links)
 
-        for market_link in all_market_links:
-            self.browser.get(market_link)
+        return all_market_links
 
-            tour_overview = self.wait.until(EC.visibility_of_element_located(
-                (By.CSS_SELECTOR, "div.tour-list-wrap")))
-            tours = tour_overview.find_elements_by_css_selector(
-                "div.tour-list-items a")
-            tour_links = [tour.get_attribute("href") for tour in tours]
+    def get_tour_links_from_market(self, market_link: str) -> list:
+        self.browser.get(market_link)
 
-            print(str(len(tours)) + " total tours in " + market_link)
-            print(tour_links)
+        tour_overview = self.wait.until(EC.visibility_of_element_located(
+            (By.CSS_SELECTOR, "div.tour-list-wrap")))
+        tours = tour_overview.find_elements_by_css_selector(
+            "div.tour-list-items a")
+        tour_links = [tour.get_attribute("href") for tour in tours]
 
-            for tour in tour_links:
-                print("loading " + tour)
-                self.browser.get(tour)
+        print(str(len(tour_links)) + " total tours in " + market_link)
+        print(tour_links)
+
+        return tour_links
+
+    def load_all_tours(self):
+        market_links = self.get_all_market_links()
+
+        for market_link in market_links:
+            tour_links = self.get_tour_links_from_market(market_link)
+
+            for tour_link in tour_links:
+                print("loading " + tour_link + " ...")
+                self.browser.get(tour_link)
                 self.wait.until(EC.visibility_of_element_located(
                     (By.CSS_SELECTOR, "div.right-book-desktop")))
                 time.sleep(1)
