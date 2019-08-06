@@ -5,7 +5,7 @@ import unittest
 
 
 class TestName(Enum):
-    BOOKING = "test_booking"
+    REGULAR_BOOKING = "test_regular_booking"
     PROMO_CODE = "test_promo_code"
     LOAD_ALL_TOURS = "test_Load_all_tours"
 
@@ -17,15 +17,15 @@ class TWTests(unittest.TestCase):
 
         self.general.set_up_selenium()
 
-        self.env = tw_actions.Environment.STAGING.value  # change to set environment
+        self.env = tw_actions.Environment.STAGING  # change to set environment
         self.promo_code = tw_actions.PromoCode(self.general)
         self.cache = tw_actions.Cache(self.general)
 
     def tearDown(self):
         self.general.tear_down_selenium()
 
-    def test_booking(self):
-        self.general.initialize_test("TestBooking", self.env)
+    def test_regular_booking(self):
+        self.general.initialize_test("TestRegularBooking", self.env)
         self.general.load_site()
         self.general.select_market()
         self.general.select_tour()
@@ -90,7 +90,7 @@ def run_test(test_name: TestName):
     suite = unittest.TestSuite()
     runner = unittest.TextTestRunner()
 
-    suite.addTest(TWTests(test_name))
+    suite.addTest(TWTests(test_name.value))
     runner.run(suite)
 
 
@@ -100,5 +100,5 @@ def run_tests():
 
 if __name__ == "__main__":
     # change self.env in setUp() to select environment
-    run_test(TestName.LOAD_ALL_TOURS.value)
+    run_test(TestName.REGULAR_BOOKING)
     # run_tests()

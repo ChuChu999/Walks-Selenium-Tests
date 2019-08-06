@@ -30,24 +30,25 @@ class General:
 
     def initialize_test(self, test_name: str, env: Environment):
         self.test_name = test_name
+        self.env = env.value
         self.parser = configparser.ConfigParser()
 
         self.parser.read("config.ini")
 
-        self.url = self.parser.get(env, "url")
-        self.first_name = self.parser.get(env, "first_name")
-        self.last_name = self.parser.get(env, "last_name")
-        self.email = self.parser.get(env, "email")
-        self.phone = self.parser.get(env, "phone")
-        self.card_number = self.parser.get(env, "card_number")
-        self.expiry_month = self.parser.get(env, "expiry_month")
-        self.expiry_year = self.parser.get(env, "expiry_year")
-        self.cvv = self.parser.get(env, "cvv")
-        self.address = self.parser.get(env, "address")
-        self.country = self.parser.get(env, "country")
-        self.zip = self.parser.get(env, "zip")
-        self.state = self.parser.get(env, "state")
-        self.city = self.parser.get(env, "city")
+        self.url = self.parser.get(self.env, "url")
+        self.first_name = self.parser.get(self.env, "first_name")
+        self.last_name = self.parser.get(self.env, "last_name")
+        self.email = self.parser.get(self.env, "email")
+        self.phone = self.parser.get(self.env, "phone")
+        self.card_number = self.parser.get(self.env, "card_number")
+        self.expiry_month = self.parser.get(self.env, "expiry_month")
+        self.expiry_year = self.parser.get(self.env, "expiry_year")
+        self.cvv = self.parser.get(self.env, "cvv")
+        self.address = self.parser.get(self.env, "address")
+        self.country = self.parser.get(self.env, "country")
+        self.zip = self.parser.get(self.env, "zip")
+        self.state = self.parser.get(self.env, "state")
+        self.city = self.parser.get(self.env, "city")
         self.screenshot_dir = "Screenshots/" + self.test_name
 
         os.makedirs(self.screenshot_dir, exist_ok=True)
@@ -228,6 +229,7 @@ class General:
             EC.visibility_of_element_located((By.CSS_SELECTOR, "div.page-header h4")))
         booking_id = "".join(re.findall(r"\d", booking_confirmation.text))
 
+        print(self.env + " " + booking_id + " " + self.test_name)
         self.save_screenshot("BookingConfirmation - " + booking_id + ".png")
 
 
