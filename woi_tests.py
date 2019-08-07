@@ -12,12 +12,13 @@ class TestName(Enum):
 
 class WOITests(unittest.TestCase):
 
+    environment = None
+
     def setUp(self):
         self.general = woi_actions.General()
 
         self.general.set_up_selenium()
 
-        self.env = woi_actions.Environment.STAGING  # change to set environment
         self.promo_code = woi_actions.PromoCode(self.general)
         self.cache = woi_actions.Cache(self.general)
 
@@ -25,7 +26,8 @@ class WOITests(unittest.TestCase):
         self.general.tear_down_selenium()
 
     def test_regular_booking(self):
-        self.general.initialize_test("TestRegularBooking", self.env)
+        self.general.initialize_test(
+            "TestRegularBooking", WOITests.environment)
         self.general.load_site()
         self.general.select_market()
         self.general.select_tour()
@@ -52,7 +54,7 @@ class WOITests(unittest.TestCase):
         time.sleep(3)
 
     def test_promo_code(self):
-        self.general.initialize_test("TestPromoCode", self.env)
+        self.general.initialize_test("TestPromoCode", WOITests.environment)
         self.general.load_site()
         self.general.select_market()
         self.general.select_tour()
@@ -80,25 +82,22 @@ class WOITests(unittest.TestCase):
         time.sleep(3)
 
     def test_load_all_tours(self):
-        self.general.initialize_test("TestLoadAllTours", self.env)
+        self.general.initialize_test("TestLoadAllTours", WOITests.environment)
         self.general.load_site()
         self.cache.load_all_tours()
         time.sleep(3)
 
 
-def run_test(test_name: TestName):
+def run_test(test_name: TestName, environment: woi_actions.Environment):
     suite = unittest.TestSuite()
     runner = unittest.TextTestRunner()
+    WOITests.environment = environment
 
     suite.addTest(WOITests(test_name.value))
     runner.run(suite)
 
 
-def run_tests():
-    unittest.main()
-
-
 if __name__ == "__main__":
-    ## change self.env in setUp() to select environment
-    run_test(TestName.LOAD_ALL_TOURS)
-    # run_tests()
+    WOITests.environment = woi_actions.Environment.STAGING
+
+    unittest.main()

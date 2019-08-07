@@ -12,12 +12,13 @@ class TestName(Enum):
 
 class TWTests(unittest.TestCase):
 
+    environment = None
+
     def setUp(self):
         self.general = tw_actions.General()
 
         self.general.set_up_selenium()
 
-        self.env = tw_actions.Environment.STAGING  # change to set environment
         self.promo_code = tw_actions.PromoCode(self.general)
         self.cache = tw_actions.Cache(self.general)
 
@@ -25,7 +26,7 @@ class TWTests(unittest.TestCase):
         self.general.tear_down_selenium()
 
     def test_regular_booking(self):
-        self.general.initialize_test("TestRegularBooking", self.env)
+        self.general.initialize_test("TestRegularBooking", TWTests.environment)
         self.general.load_site()
         self.general.select_market()
         self.general.select_tour()
@@ -52,7 +53,7 @@ class TWTests(unittest.TestCase):
         time.sleep(3)
 
     def test_promo_code(self):
-        self.general.initialize_test("TestPromoCode", self.env)
+        self.general.initialize_test("TestPromoCode", TWTests.environment)
         self.general.load_site()
         self.general.select_market()
         self.general.select_tour()
@@ -80,25 +81,22 @@ class TWTests(unittest.TestCase):
         time.sleep(3)
 
     def test_load_all_tours(self):
-        self.general.initialize_test("TestLoadAllTours", self.env)
+        self.general.initialize_test("TestLoadAllTours", TWTests.environment)
         self.general.load_site()
         self.cache.load_all_tours()
         time.sleep(3)
 
 
-def run_test(test_name: TestName):
+def run_test(test_name: TestName, environment: tw_actions.Environment):
     suite = unittest.TestSuite()
     runner = unittest.TextTestRunner()
+    TWTests.environment = environment
 
     suite.addTest(TWTests(test_name.value))
     runner.run(suite)
 
 
-def run_tests():
-    unittest.main()
-
-
 if __name__ == "__main__":
-    # change self.env in setUp() to select environment
-    run_test(TestName.LOAD_ALL_TOURS)
-    # run_tests()
+    TWTests.environment = tw_actions.Environment.STAGING
+
+    unittest.main()

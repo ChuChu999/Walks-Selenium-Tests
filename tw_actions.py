@@ -49,7 +49,7 @@ class General:
         self.zip = self.parser.get(self.env, "zip")
         self.state = self.parser.get(self.env, "state")
         self.city = self.parser.get(self.env, "city")
-        self.screenshot_dir = "Screenshots/" + self.env + "/" + self.test_name
+        self.screenshot_dir = "screenshots/" + self.env + "/" + self.test_name
 
         os.makedirs(self.screenshot_dir, exist_ok=True)
 
