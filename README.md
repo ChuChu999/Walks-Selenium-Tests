@@ -13,5 +13,5 @@ Automated tests that simulate the checkout process for https://www.takewalks.com
 - Download [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) according to your system's version of Google Chrome (find your Chrome version through Help -> About Google Chrome)
 - Move the extracted chromedriver file to `/usr/local/bin`
 
-**Additional Information on Installing Selenium for Python**
-- Reference https://selenium-python.readthedocs.io/installation.html for additional information on how to install the Selenium package for Python
+**Additional Information**
+- Reference https://selenium-python.readthedocs.io/installation.html for more information on how to install the Selenium package for Python
