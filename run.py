@@ -70,5 +70,5 @@ if __name__ == "__main__":
     environment = get_input_environment()
     test_name = get_input_test_name()
 
-    print("\nloading", test_name, "on",  environment, "for", site, "...\n")
+    print("\nrunning", test_name, "on",  environment, "for", site, "...\n")
     site.value.run_test(test_name, environment)
