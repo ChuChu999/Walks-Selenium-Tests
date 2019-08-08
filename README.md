@@ -26,4 +26,4 @@ Automated tests that simulate the checkout process for https://www.takewalks.com
 - Fill out `config.ini` in a text editor
 
 #### Run
-- `python3 [test_tw.py OR test_woi.py]` in the root directory to run the test
+- `python3 [test_tw.py OR test_woi.py]` in the root directory to load the interactive runner
