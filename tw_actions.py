@@ -14,11 +14,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 import time
 
 
-class Environment(Enum):
-    STAGING = "tw_staging"
-    PRODUCTION = "tw_production"
-
-
 class General:
 
     def set_up_selenium(self):
@@ -28,28 +23,28 @@ class General:
     def tear_down_selenium(self):
         self.browser.quit()
 
-    def initialize_test(self, test_name: str, env: Environment):
+    def initialize_test(self, test_name: str, environment: str):
         self.test_name = test_name
-        self.env = env.value
+        self.environment = environment
         self.parser = configparser.ConfigParser()
 
         self.parser.read("config.ini")
 
-        self.url = self.parser.get(self.env, "url")
-        self.first_name = self.parser.get(self.env, "first_name")
-        self.last_name = self.parser.get(self.env, "last_name")
-        self.email = self.parser.get(self.env, "email")
-        self.phone = self.parser.get(self.env, "phone")
-        self.card_number = self.parser.get(self.env, "card_number")
-        self.expiry_month = self.parser.get(self.env, "expiry_month")
-        self.expiry_year = self.parser.get(self.env, "expiry_year")
-        self.cvv = self.parser.get(self.env, "cvv")
-        self.address = self.parser.get(self.env, "address")
-        self.country = self.parser.get(self.env, "country")
-        self.zip = self.parser.get(self.env, "zip")
-        self.state = self.parser.get(self.env, "state")
-        self.city = self.parser.get(self.env, "city")
-        self.screenshot_dir = "screenshots/" + self.env + "/" + self.test_name
+        self.url = self.parser.get(self.environment, "url")
+        self.first_name = self.parser.get(self.environment, "first_name")
+        self.last_name = self.parser.get(self.environment, "last_name")
+        self.email = self.parser.get(self.environment, "email")
+        self.phone = self.parser.get(self.environment, "phone")
+        self.card_number = self.parser.get(self.environment, "card_number")
+        self.expiry_month = self.parser.get(self.environment, "expiry_month")
+        self.expiry_year = self.parser.get(self.environment, "expiry_year")
+        self.cvv = self.parser.get(self.environment, "cvv")
+        self.address = self.parser.get(self.environment, "address")
+        self.country = self.parser.get(self.environment, "country")
+        self.zip = self.parser.get(self.environment, "zip")
+        self.state = self.parser.get(self.environment, "state")
+        self.city = self.parser.get(self.environment, "city")
+        self.screenshot_dir = "screenshots/" + self.environment + "/" + self.test_name
 
         os.makedirs(self.screenshot_dir, exist_ok=True)
 
@@ -58,7 +53,7 @@ class General:
 
     def save_screenshot(self, file_name: str):
         self.browser.save_screenshot(
-            self.screenshot_dir + "/" + str(datetime.now()) + " - " + file_name)
+            self.screenshot_dir + "/" + str(datetime.now()) + " - " + file_name + ".png")
 
     def focus(self, element: webdriver.remote.webelement.WebElement):
         self.browser.execute_script("arguments[0].focus();", element)
@@ -74,9 +69,9 @@ class General:
             EC.presence_of_element_located((By.LINK_TEXT, "Rome")))
 
         self.initialize_action_chains()
-        self.save_screenshot("Pre-Market.png")
+        self.save_screenshot("Pre-Market")
         self.actions.move_to_element(region).click(market).perform()
-        self.save_screenshot("Post-Market.png")
+        self.save_screenshot("Post-Market")
 
     def select_tour(self):
         tour_overview = self.wait.until(EC.presence_of_element_located(
@@ -84,9 +79,10 @@ class General:
         tours = tour_overview.find_elements_by_tag_name("a")
         tour = random.choice(tours)
 
-        self.save_screenshot("Pre-Tour.png")
+        print("loading " + tour.get_attribute("href") + " ...")
+        self.save_screenshot("Pre-Tour")
         tour.send_keys(Keys.ENTER)
-        self.save_screenshot("Post-Tour.png")
+        self.save_screenshot("Post-Tour")
 
     def increment_month(self):
         for i in range(2):
@@ -115,7 +111,7 @@ class General:
 
         self.wait.until(EC.visibility_of(availableDays[0]))
         time.sleep(0.1)
-        self.save_screenshot("Pre-Date.png")
+        self.save_screenshot("Pre-Date")
         availableDays[0].send_keys(Keys.ENTER)
 
     def select_time(self):
@@ -134,9 +130,9 @@ class General:
         book = self.wait.until(EC.element_to_be_clickable(
             (By.CSS_SELECTOR, "div.right-book-desktop button.btn-book-now")))
 
-        self.save_screenshot("Pre-Book.png")
+        self.save_screenshot("Pre-Book")
         book.send_keys(Keys.ENTER)
-        self.save_screenshot("Post-Book.png")
+        self.save_screenshot("Post-Book")
 
     def fill_first_name(self):
         first_name = self.wait.until(
@@ -158,7 +154,7 @@ class General:
         phone = self.browser.find_element_by_id("thePhone")
 
         phone.send_keys(self.phone)
-        self.save_screenshot("Post-Phone.png")
+        self.save_screenshot("Post-Phone")
 
     def fill_credit_card(self):
         cc = self.browser.find_element_by_id("ccno")
@@ -179,7 +175,7 @@ class General:
         cvv = self.browser.find_element_by_id("theCcv")
 
         cvv.send_keys(self.cvv)
-        self.save_screenshot("Post-CVV.png")
+        self.save_screenshot("Post-CVV")
 
     def fill_address(self):
         address = self.browser.find_element_by_name("street_address")
@@ -215,16 +211,16 @@ class General:
     def submit_payment_form(self):
         pay = self.browser.find_element_by_class_name("complete_booking")
 
-        self.save_screenshot("Pre-Pay.png")
+        self.save_screenshot("Pre-Pay")
         pay.click()
-        self.save_screenshot("Post-Pay.png")
+        self.save_screenshot("Post-Pay")
 
         booking_confirmation = self.wait.until(
             EC.visibility_of_element_located((By.CSS_SELECTOR, "h1.page-sub-title")))
         booking_id = "".join(re.findall(r"\d", booking_confirmation.text))
 
-        print(self.env + " " + booking_id + " " + self.test_name)
-        self.save_screenshot("BookingConfirmation - " + booking_id + ".png")
+        print(self.environment + " " + booking_id + " " + self.test_name)
+        self.save_screenshot("BookingConfirmation - " + booking_id + "")
 
 
 class PromoCode:
@@ -238,15 +234,15 @@ class PromoCode:
         promo_code_box = self.wait.until(
             EC.element_to_be_clickable((By.LINK_TEXT, "PROMO CODE")))
 
-        self.save_screenshot("Pre-PromoBox.png")
+        self.save_screenshot("Pre-PromoBox")
         promo_code_box.send_keys(Keys.ENTER)
-        self.save_screenshot("Post-PromoBox.png")
+        self.save_screenshot("Post-PromoBox")
 
         promo_code = self.wait.until(
             EC.visibility_of_element_located((By.NAME, "promo")))
 
         promo_code.send_keys("rc10")
-        self.save_screenshot("Post-PromoCode.png")
+        self.save_screenshot("Post-PromoCode")
 
         apply_promo = self.browser.find_element_by_class_name("promo-btn")
 
@@ -307,5 +303,5 @@ class Cache:
                 self.wait.until(EC.visibility_of_element_located(
                     (By.CSS_SELECTOR, "div.right-book-desktop")))
                 time.sleep(1)
-
-            time.sleep(3)
+                self.save_screenshot(tour_link.replace(
+                    market_link, "").strip("/"))

@@ -10,8 +10,14 @@ class TestName(Enum):
     LOAD_ALL_TOURS = "test_load_all_tours"
 
 
+class Environment(Enum):
+    STAGING = "tw_staging"
+    PRODUCTION = "tw_production"
+
+
 class TWTests(unittest.TestCase):
 
+    test_name = None
     environment = None
 
     def setUp(self):
@@ -20,13 +26,12 @@ class TWTests(unittest.TestCase):
         self.general.set_up_selenium()
 
         self.promo_code = tw_actions.PromoCode(self.general)
-        self.cache = tw_actions.Cache(self.general)
 
     def tearDown(self):
         self.general.tear_down_selenium()
 
     def test_regular_booking(self):
-        self.general.initialize_test("TestRegularBooking", TWTests.environment)
+        self.general.initialize_test(TWTests.test_name, TWTests.environment)
         self.general.load_site()
         self.general.select_market()
         self.general.select_tour()
@@ -53,7 +58,7 @@ class TWTests(unittest.TestCase):
         time.sleep(3)
 
     def test_promo_code(self):
-        self.general.initialize_test("TestPromoCode", TWTests.environment)
+        self.general.initialize_test(TWTests.test_name, TWTests.environment)
         self.general.load_site()
         self.general.select_market()
         self.general.select_tour()
@@ -81,22 +86,26 @@ class TWTests(unittest.TestCase):
         time.sleep(3)
 
     def test_load_all_tours(self):
-        self.general.initialize_test("TestLoadAllTours", TWTests.environment)
+        self.general.initialize_test(TWTests.test_name, TWTests.environment)
+
+        self.cache = tw_actions.Cache(self.general)
+
         self.general.load_site()
         self.cache.load_all_tours()
         time.sleep(3)
 
 
-def run_test(test_name: TestName, environment: tw_actions.Environment):
+def run_test(test_name: TestName, environment: Environment):
     suite = unittest.TestSuite()
     runner = unittest.TextTestRunner()
-    TWTests.environment = environment
+    TWTests.test_name = test_name.value
+    TWTests.environment = environment.value
 
-    suite.addTest(TWTests(test_name.value))
+    suite.addTest(TWTests(TWTests.test_name))
     runner.run(suite)
 
 
 if __name__ == "__main__":
-    TWTests.environment = tw_actions.Environment.STAGING
+    TWTests.environment = Environment.STAGING
 
     unittest.main()

@@ -10,8 +10,14 @@ class TestName(Enum):
     LOAD_ALL_TOURS = "test_load_all_tours"
 
 
+class Environment(Enum):
+    STAGING = "woi_staging"
+    PRODUCTION = "woi_production"
+
+
 class WOITests(unittest.TestCase):
 
+    test_name = None
     environment = None
 
     def setUp(self):
@@ -26,8 +32,7 @@ class WOITests(unittest.TestCase):
         self.general.tear_down_selenium()
 
     def test_regular_booking(self):
-        self.general.initialize_test(
-            "TestRegularBooking", WOITests.environment)
+        self.general.initialize_test(WOITests.test_name, WOITests.environment)
         self.general.load_site()
         self.general.select_market()
         self.general.select_tour()
@@ -54,7 +59,7 @@ class WOITests(unittest.TestCase):
         time.sleep(3)
 
     def test_promo_code(self):
-        self.general.initialize_test("TestPromoCode", WOITests.environment)
+        self.general.initialize_test(WOITests.test_name, WOITests.environment)
         self.general.load_site()
         self.general.select_market()
         self.general.select_tour()
@@ -82,22 +87,23 @@ class WOITests(unittest.TestCase):
         time.sleep(3)
 
     def test_load_all_tours(self):
-        self.general.initialize_test("TestLoadAllTours", WOITests.environment)
+        self.general.initialize_test(WOITests.test_name, WOITests.environment)
         self.general.load_site()
         self.cache.load_all_tours()
         time.sleep(3)
 
 
-def run_test(test_name: TestName, environment: woi_actions.Environment):
+def run_test(test_name: TestName, environment: Environment):
     suite = unittest.TestSuite()
     runner = unittest.TextTestRunner()
-    WOITests.environment = environment
+    WOITests.test_name = test_name.value
+    WOITests.environment = environment.value
 
     suite.addTest(WOITests(test_name.value))
     runner.run(suite)
 
 
 if __name__ == "__main__":
-    WOITests.environment = woi_actions.Environment.STAGING
+    WOITests.environment = Environment.STAGING
 
     unittest.main()
