@@ -4,21 +4,21 @@ import time
 import unittest
 
 
+class Environment(Enum):
+    STAGING = "tw_staging"
+    PRODUCTION = "tw_production"
+
+
 class TestName(Enum):
     REGULAR_BOOKING = "test_regular_booking"
     PROMO_CODE = "test_promo_code"
     LOAD_ALL_TOURS = "test_load_all_tours"
 
 
-class Environment(Enum):
-    STAGING = "tw_staging"
-    PRODUCTION = "tw_production"
-
-
 class TWTests(unittest.TestCase):
 
-    test_name = None
     environment = None
+    test_name = None
 
     def setUp(self):
         self.general = tw_actions.General()

@@ -19,7 +19,7 @@ def get_input_site() -> Site:
     for i in range(len(sites)):
         print(str(i)+") " + sites[i].name)
 
-    selection = input("Choose a site for the test to run on [0]: ") or 0
+    selection = input("Choose the site for the test to run on [0]: ") or 0
 
     try:
         selection = int(selection)
@@ -27,24 +27,6 @@ def get_input_site() -> Site:
         raise ValueError("Please enter an integer!")
 
     return sites[selection]
-
-
-def get_input_test_name() -> site.value.TestName:
-    test_names = [test_name for test_name in site.value.TestName]
-
-    print("\nAvailable tests:")
-
-    for i in range(len(test_names)):
-        print(str(i) + ") " + test_names[i].name)
-
-    selection = input("Choose a test to run [0]: ") or 0
-
-    try:
-        selection = int(selection)
-    except ValueError:
-        raise ValueError("Please enter an integer!")
-
-    return test_names[selection]
 
 
 def get_input_environment() -> site.value.Environment:
@@ -65,10 +47,28 @@ def get_input_environment() -> site.value.Environment:
     return environments[selection]
 
 
+def get_input_test_name() -> site.value.TestName:
+    test_names = [test_name for test_name in site.value.TestName]
+
+    print("\nAvailable tests:")
+
+    for i in range(len(test_names)):
+        print(str(i) + ") " + test_names[i].name)
+
+    selection = input("Choose the test to run [0]: ") or 0
+
+    try:
+        selection = int(selection)
+    except ValueError:
+        raise ValueError("Please enter an integer!")
+
+    return test_names[selection]
+
+
 if __name__ == "__main__":
     site = get_input_site()
-    test_name = get_input_test_name()
     environment = get_input_environment()
+    test_name = get_input_test_name()
 
     print("\nloading", test_name, "on",  environment, "for", site, "...\n")
     site.value.run_test(test_name, environment)
