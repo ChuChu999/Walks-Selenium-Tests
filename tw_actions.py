@@ -18,7 +18,7 @@ class General:
 
     def set_up_selenium(self):
         self.browser = webdriver.Chrome()
-        self.wait = WebDriverWait(self.browser, 30)
+        self.wait = WebDriverWait(self.browser, 60)
 
     def tear_down_selenium(self):
         self.browser.quit()
@@ -110,7 +110,8 @@ class General:
             raise Exception("no available days two months in advance")
 
         self.wait.until(EC.visibility_of(availableDays[0]))
-        time.sleep(0.1)
+        print(availableDays[0].get_attribute("title"))
+        time.sleep(0.5)
         self.save_screenshot("Pre-Date")
         availableDays[0].send_keys(Keys.ENTER)
 

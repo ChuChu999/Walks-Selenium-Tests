@@ -18,7 +18,7 @@ class General:
 
     def set_up_selenium(self):
         self.browser = webdriver.Chrome()
-        self.wait = WebDriverWait(self.browser, 30)
+        self.wait = WebDriverWait(self.browser, 60)
 
     def tear_down_selenium(self):
         self.browser.quit()
@@ -95,9 +95,11 @@ class General:
                 (By.CSS_SELECTOR, "div.right-book-desktop a.datepick-cmd-next")))
 
             self.focus(next_month)
-            time.sleep(0.1)
+            time.sleep(0.25)
             next_month.click()
             time.sleep(0.25)
+
+        time.sleep(0.25)
 
     def select_date(self):
         calendar = self.wait.until(EC.visibility_of_element_located(
@@ -115,7 +117,8 @@ class General:
             raise Exception("no available days two months in advance")
 
         self.wait.until(EC.visibility_of(availableDays[0]))
-        time.sleep(0.1)
+        print(availableDays[0].get_attribute("title"))
+        time.sleep(0.5)
         self.save_screenshot("Pre-Date")
         availableDays[0].send_keys(Keys.ENTER)
 
