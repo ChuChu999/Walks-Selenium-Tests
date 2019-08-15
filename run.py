@@ -17,7 +17,7 @@ def get_input_site() -> Site:
     print("\nAvailable sites:")
 
     for i in range(len(sites)):
-        print(str(i)+") " + sites[i].name)
+        print(str(i) + ") " + sites[i].name)
 
     selection = input("Choose the site for the test to run on [0]: ") or 0
 
